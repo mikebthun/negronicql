@@ -1,67 +1,58 @@
 package negronicql
 
-import(
+import (
+	"net/http"
 
-  "github.com/gocql/gocql"
-  "github.com/gorilla/context"
-  "net/http"
+	"github.com/gocql/gocql"
+	"github.com/gorilla/context"
+)
 
-
-) 
-
- 
-
-type Middleware struct {
- 
-  Cluster *gocql.ClusterConfig
-  Ips []string
-  Keyspace string
-  Consistency gocql.Consistency
-  Session *gocql.Session
-
+type Negronicql struct {
+	Cluster     *gocql.ClusterConfig
+	Ips         []string
+	Keyspace    string
+	Consistency gocql.Consistency
+	Session     *gocql.Session
 }
 
-
-func NewMiddleware() *Middleware {
-    return &Middleware{}
+func NewNegronicql() *Negronicql {
+	return &Negronicql{}
 }
- 
+
 // be sure to defer session.close()
-func (m *Middleware) Connect() error {
-   
-   //default to localhost
-   if len(m.Ips) < 1 {
+func (m *Negronicql) Connect() error {
 
-      m.Ips = []string{"127.0.0.1"} 
+	//default to localhost
+	if len(m.Ips) < 1 {
 
-   }
+		m.Ips = []string{"127.0.0.1"}
 
-   //create cluster config
-   m.Cluster = gocql.NewCluster( m.Ips[0] )
-  
-   session, err := m.Cluster.CreateSession()
+	}
 
-   m.Session = session
+	//create cluster config
+	m.Cluster = gocql.NewCluster(m.Ips[0])
 
-   if err != nil {
+	session, err := m.Cluster.CreateSession()
 
-      return err
+	m.Session = session
 
-   }
+	if err != nil {
 
- 
-   return nil
-     
+		return err
+
+	}
+
+	return nil
 
 }
- 
+
 // The middleware handler
-func (m *Middleware) ServeHTTP(rw http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
+func (m *Negronicql) ServeHTTP(rw http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
 
-    //attach the session
-    context.Set( r, "Session", m.Session )
+	//attach the session
+	context.Set(r, "Session", m.Session)
 
-    // Call the next middleware handler
-    next(rw, r)
+	// Call the next middleware handler
+	next(rw, r)
+
 }
-
