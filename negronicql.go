@@ -15,7 +15,7 @@ type Negronicql struct {
 	Session     *gocql.Session
 }
 
-func NewNegronicql() *Negronicql {
+func New() *Negronicql {
 	return &Negronicql{}
 }
 

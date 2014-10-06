@@ -28,7 +28,7 @@ import(
 
  router.HandleFunc("/", MyHandler ).Methods("POST")
  n := negroni.Classic()
- cqldb := negronicql.NewNegronicql()
+ cqldb := negronicql.New()
 
  //set cluster options here if needed, defaults to localhost
  //cqldb.Ips = []string{"127.0.0.1", "127.0.0.2"}  
