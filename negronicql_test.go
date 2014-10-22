@@ -7,8 +7,6 @@ import (
 
 	"github.com/gocql/gocql"
 	"github.com/mikebthun/negronicql"
-
-	//"reflect"
 )
 
 var (
