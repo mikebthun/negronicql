@@ -29,8 +29,12 @@ func (m *Negronicql) Connect() error {
 
 	}
 
-	//create cluster config
-	m.Cluster = gocql.NewCluster(m.Ips[0])
+	//create cluster config if not created by user
+	if m.Cluster == nil {
+		m.Cluster = gocql.NewCluster(m.Ips...)
+		m.Cluster.Keyspace = m.Keyspace
+		m.Cluster.Consistency = m.Consistency
+	}
 
 	session, err := m.Cluster.CreateSession()
 
@@ -50,7 +54,7 @@ func (m *Negronicql) Connect() error {
 func (m *Negronicql) ServeHTTP(rw http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
 
 	//attach the session
-	context.Set(r, "Session", m.Session)
+	context.Set(r, "CQLSession", m.Session)
 
 	// Call the next middleware handler
 	next(rw, r)
