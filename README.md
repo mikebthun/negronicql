@@ -10,7 +10,7 @@ Depends on [Gorilla Context Package](http://www.gorillatoolkit.org/pkg/context)
 
 ### Usage
  
-```
+~~~ go
 import(
 
 "github.com/mikebthun/negronicql"
@@ -19,11 +19,6 @@ import(
 
 )
 
-```
-
-
-~~~ go
- 
  router := mux.NewRouter()
 
  router.HandleFunc("/", MyHandler ).Methods("POST")
@@ -58,11 +53,11 @@ func MyHandler(w http.ResponseWriter, req *http.Request) {
 
 Run your queries like normal on the gocql session:
 
-```
+~~~ go
 
 session.Query( `SELECT * FROM blah` ).Exec()
 
-```
+~~~
 
 If you want to customize your ClusterConfig object, you can instantiate one, give it its attributes and Connect().
 
@@ -81,6 +76,7 @@ If you want to customize your ClusterConfig object, you can instantiate one, giv
 ### Contributors
 
 Author : Mike B Thun @mikebthun
+
 Contrib : Clem DalPalu @Dal-Papa
  
 ### License 
