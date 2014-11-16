@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/Dal-Papa/negronicql"
 	"github.com/gocql/gocql"
-	"github.com/mikebthun/negronicql"
 )
 
 var (
@@ -15,17 +15,29 @@ var (
 	columnFamily = "go_db_package_test"
 	email        = "test@test.com"
 	ip           *string
+	session      *gocql.Session
 )
+
+func TestIndex(t *testing.T) {
+
+	conn := negronicql.New()
+	err := conn.Connect()
+
+	if err != nil {
+
+		t.Fatalf("Is cassandra running?: %s", err)
+
+	}
+
+	session = conn.Session
+
+}
 
 func TestSetup(t *testing.T) {
 
 	ip = flag.String("ip", "127.0.0.1", "Cassandra Ip")
 	ips = []string{*ip}
 	flag.Parse()
-
-	session := setup(t, "")
-
-	defer session.Close()
 
 	//create the keyspace if does not exist
 	cql := fmt.Sprintf(`
@@ -65,9 +77,6 @@ func TestSetup(t *testing.T) {
 
 func TestInsertWithParams(t *testing.T) {
 
-	session := setup(t, keyspace)
-	defer session.Close()
-
 	cql := fmt.Sprintf(`
     
     INSERT INTO %s.%s 
@@ -81,9 +90,6 @@ func TestInsertWithParams(t *testing.T) {
 }
 
 func TestSelectWithParams(t *testing.T) {
-
-	session := setup(t, keyspace)
-	defer session.Close()
 
 	cql := fmt.Sprintf(`
 
@@ -108,34 +114,14 @@ func TestSelectWithParams(t *testing.T) {
 
 	}
 
-	cleanup(t)
-
 }
 
-func cleanup(t *testing.T) {
-
-	//Setup Cassandra configuration
-	session := setup(t, keyspace)
+func TestCleanup(t *testing.T) {
 
 	cql := fmt.Sprintf("DROP KEYSPACE %s", keyspace)
 
 	session.Query(cql).Exec()
 
-}
-
-func setup(t *testing.T, k string) *gocql.Session {
-
-	//Setup Cassandra configuration
-
-	conn := negronicql.NewNegronicql()
-	err := conn.Connect()
-
-	if err != nil {
-
-		t.Fatalf("Is cassandra running?: %s", err)
-
-	}
-
-	return conn.Session
+	defer session.Close()
 
 }
