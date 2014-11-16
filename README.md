@@ -10,7 +10,7 @@ Depends on [Gorilla Context Package](http://www.gorillatoolkit.org/pkg/context)
 
 ### Usage
  
-```
+~~~ go
 import(
 
 "github.com/mikebthun/negronicql"
@@ -19,11 +19,6 @@ import(
 
 )
 
-```
-
-
-```
- 
  router := mux.NewRouter()
 
  router.HandleFunc("/", MyHandler ).Methods("POST")
@@ -49,20 +44,40 @@ func MyHandler(w http.ResponseWriter, req *http.Request) {
  
      //grab the session here
 
-     session = context.Get( req, "Session" ).(*gocql.Session)
+     session = context.Get( req, "CQLSession" ).(*gocql.Session)
 
 
      
 }
-```
+~~~
 
 Run your queries like normal on the gocql session:
 
-```
+~~~ go
 
 session.Query( `SELECT * FROM blah` ).Exec()
 
-```
+~~~
+
+If you want to customize your ClusterConfig object, you can instantiate one, give it its attributes and Connect().
+
+~~~ go
+  cqldb := negronicql.New()
+  cqldb.Cluster = gocql.NewCluster("127.0.0.1", "127.0.0.2")
+  cqldb.Cluster.Authenticator = gocql.PasswordAuthenticator{"user", "password"}
+  cqldb.Cluster.Port = 4242
+  cqldb.Cluster.Keyspace = "MyKeySpace"
+  cqldb.Cluster.Consistency = gocql.Quorum
+  // ...
+  cqldb.Connect()
+
+~~~
+
+### Contributors
+
+Author : Mike B Thun @mikebthun
+
+Contrib : Clem DalPalu @Dal-Papa
  
 ### License 
 
