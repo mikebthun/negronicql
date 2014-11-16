@@ -10,6 +10,13 @@ Depends on [Gorilla Context Package](http://www.gorillatoolkit.org/pkg/context)
 
 ### Usage
  
+
+
+#### Backward Compatibility
+
+Nov-16-2014: Changed from Session to CQLSession to avoid Session issues in Negroni by Dal-Papa. This pull will break older builds.
+
+
 ~~~ go
 import(
 
@@ -55,7 +62,7 @@ Run your queries like normal on the gocql session:
 
 ~~~ go
 
-session.Query( `SELECT * FROM blah` ).Exec()
+session.Query( `SELECT * FROM blah` ).Consistency(gocql.One).Exec()
 
 ~~~
 
